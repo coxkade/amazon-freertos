@@ -24,7 +24,7 @@
         <link>
             <name>vendors/cypress/WICED_SDK</name>
             <type>2</type>
-            <locationURI>BASE_DIR/vendors/cypress/WICED_SDK</locationURI>
+            <locationURI>AWS_IOT_MCU_ROOT/vendors/cypress/WICED_SDK</locationURI>
         </link>
 		<link>
 			<name>freertos_kernel/event_groups.c</name>
@@ -224,17 +224,17 @@
 		<link>
 			<name>demos/dev_mode_key_provisioning/src/aws_dev_mode_key_provisioning.c</name>
 			<type>1</type>
-			<locationURI>BASE_DIR/demos/dev_mode_key_provisioning/src/aws_dev_mode_key_provisioning.c</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/demos/dev_mode_key_provisioning/src/aws_dev_mode_key_provisioning.c</locationURI>
 		</link>
 		<link>
 			<name>demos/dev_mode_key_provisioning/src/pem2der.c</name>
 			<type>1</type>
-			<locationURI>BASE_DIR/demos/dev_mode_key_provisioning/src/pem2der.c</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/demos/dev_mode_key_provisioning/src/pem2der.c</locationURI>
 		</link>
 		<link>
 			<name>demos/dev_mode_key_provisioning/include/aws_dev_mode_key_provisioning.h</name>
 			<type>1</type>
-			<locationURI>BASE_DIR/demos/dev_mode_key_provisioning/include/aws_dev_mode_key_provisioning.h</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/demos/dev_mode_key_provisioning/include/aws_dev_mode_key_provisioning.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/abstractions/pkcs11/include/iot_pkcs11.h</name>
@@ -1580,17 +1580,17 @@
 		<link>
 			<name>libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11.h</name>
 			<type>1</type>
-			<locationURI>BASE_DIR/libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11.h</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11f.h</name>
 			<type>1</type>
-			<locationURI>BASE_DIR/libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11f.h</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11f.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11t.h</name>
 			<type>1</type>
-			<locationURI>BASE_DIR/libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11t.h</locationURI>
+			<locationURI>AWS_IOT_MCU_ROOT/libraries/3rdparty/pkcs11/published/2-40-errata-1/pkcs11t.h</locationURI>
 		</link>
 		<link>
 			<name>libraries/3rdparty/unity/src/unity.c</name>
