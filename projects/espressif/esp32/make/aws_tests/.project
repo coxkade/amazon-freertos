@@ -246,7 +246,7 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>libraries/3rdparty/pkcs11</name>
+			<name>libraries/3rdparty/pkcs11/published/2-40-errata-1</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
