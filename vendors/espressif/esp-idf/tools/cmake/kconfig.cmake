@@ -11,6 +11,10 @@ macro(kconfig_set_variables)
     set(KCONFIG_JSON_MENUS ${CONFIG_DIR}/kconfig_menus.json)
 
     set(ROOT_KCONFIG ${IDF_PATH}/Kconfig)
+    set(ACTUAL_MENUCONFIG ${ROOT_KCONFIG})
+    if(ROOT_KCONFIG_OVERRIDE)
+    set(ACTUAL_MENUCONFIG ${ROOT_KCONFIG_OVERRIDE})
+    endif()
 endmacro()
 
 if(CMAKE_HOST_WIN32)
@@ -67,7 +71,11 @@ if(NOT MCONF)
         ${CMAKE_CURRENT_LIST_FILE})
     unset(mconf_srcfiles)
 
+    if(KCONFIG_ADDITIONAL_DEPENDS)
+    set(menuconfig_depends DEPENDS mconf-idf ${KCONFIG_ADDITIONAL_DEPENDS})
+    else()
     set(menuconfig_depends DEPENDS mconf-idf)
+    endif()
 
 endif()
 
@@ -105,15 +113,34 @@ function(kconfig_process_config)
     set(COMPONENT_KCONFIGS "${kconfigs}" PARENT_SCOPE)
     set(COMPONENT_KCONFIGS_PROJBUILD "${kconfigs_projbuild}" PARENT_SCOPE)
 
+    #Tell the application about these settings
+    if(KCONFIGS_PROJBUILD_PARENT)
+        message(STATUS "KCONFIGS_PROJBUILD_PARENT Exists.  Setting it.")
+        set(KCONFIGS_PROJBUILD_PARENT ${kconfigs_projbuild} CACHE INTERNAL  "Variable that children can use to tell the parent CONFIGS_PROJBUILD")
+    endif()
+    if(COMPONENT_KCONFIGS_PARENT)
+        message(STATUS "COMPONENT_KCONFIGS_PARENT Exists.  Setting it.")
+        set(COMPONENT_KCONFIGS_PARENT ${kconfigs} CACHE INTERNAL "Variable that children can use to tell the parent COMPONENT_KCONFIGS")
+    endif()
+
+    list(APPEND confgen_basecommane_env --create-config-if-missing)
+    list(APPEND confgen_basecommane_env --env "COMPONENT_KCONFIGS=${kconfigs}")
+    list(APPEND confgen_basecommane_env --env "COMPONENT_KCONFIGS_PROJBUILD=${kconfigs_projbuild}")
+    list(APPEND confgen_basecommane_env --env "IDF_CMAKE=y")
+    if(KCONFIG_ENV_OVERRIDES)
+        foreach(val ${KCONFIG_ENV_OVERRIDES})
+        list(APPEND confgen_basecommane_env --env "${val}")
+        endforeach()
+        list(APPEND confgen_basecommane_env --env "IDF_PATH=${IDF_PATH}")
+    endif()
+
     set(confgen_basecommand
         ${PYTHON} ${IDF_PATH}/tools/kconfig_new/confgen.py
-        --kconfig ${ROOT_KCONFIG}
+        --kconfig ${ACTUAL_MENUCONFIG}
         --config ${SDKCONFIG}
         ${defaults_arg}
-        --create-config-if-missing
-        --env "COMPONENT_KCONFIGS=${kconfigs}"
-        --env "COMPONENT_KCONFIGS_PROJBUILD=${kconfigs_projbuild}"
-        --env "IDF_CMAKE=y")
+        ${confgen_basecommane_env}
+        )
 
     # Generate the menuconfig target (uses C-based mconf-idf tool, either prebuilt or via mconf-idf target above)
     add_custom_target(menuconfig
@@ -126,9 +153,30 @@ function(kconfig_process_config)
         "IDF_CMAKE=y"
         "KCONFIG_CONFIG=${SDKCONFIG}"
         "IDF_TARGET=${IDF_TARGET}"
-        ${MCONF} ${ROOT_KCONFIG}
+        "IDF_PATH=${IDF_PATH}"
+        ${KCONFIG_ENV_OVERRIDES}
+        ${MCONF} ${ACTUAL_MENUCONFIG}
+        VERBATIM
+        USES_TERMINAL
+        )
+
+    if(MENUCONFIG_OVERRIDE)
+    add_custom_target(customkconfig
+        ${menuconfig_depends}
+        # create any missing config file, with defaults if necessary
+        COMMAND ${confgen_basecommand} --env "IDF_TARGET=${IDF_TARGET}" --output config ${SDKCONFIG}
+        COMMAND ${CMAKE_COMMAND} -E env
+        "COMPONENT_KCONFIGS=${kconfigs}"
+        "COMPONENT_KCONFIGS_PROJBUILD=${kconfigs_projbuild}"
+        "IDF_CMAKE=y"
+        "KCONFIG_CONFIG=${SDKCONFIG}"
+        "IDF_TARGET=${IDF_TARGET}"
+        "IDF_PATH=${IDF_PATH}"
+        ${KCONFIG_ENV_OVERRIDES}
+        ${MENUCONFIG_OVERRIDE} ${ACTUAL_MENUCONFIG}
         VERBATIM
         USES_TERMINAL)
+    endif()
 
     # Custom target to run confserver.py from the build tool
     add_custom_target(confserver
@@ -139,6 +187,18 @@ function(kconfig_process_config)
         VERBATIM
         USES_TERMINAL)
 
+
+    #Decide if we have what we need to run the config
+    set(kconfig_run_config FALSE)
+    if(OVERRIDE_ESP_CONFIG_FILE)
+        if(EXISTS "${OVERRIDE_ESP_CONFIG_FILE}")
+            set(kconfig_run_config TRUE)
+        endif()
+    else()
+        set(kconfig_run_config TRUE)
+    endif()
+
+    if(${kconfig_run_config})
     # Generate configuration output via confgen.py
     # makes sdkconfig.h and skdconfig.cmake
     #
@@ -151,6 +211,7 @@ function(kconfig_process_config)
         RESULT_VARIABLE config_result)
     if(config_result)
         message(FATAL_ERROR "Failed to run confgen.py (${confgen_basecommand}). Error ${config_result}")
+    endif()
     endif()
 
     # When sdkconfig file changes in the future, trigger a cmake run
@@ -168,5 +229,6 @@ function(kconfig_process_config)
     set_property(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" APPEND PROPERTY
         ADDITIONAL_MAKE_CLEAN_FILES
         "${SDKCONFIG_HEADER}" "${SDKCONFIG_CMAKE}")
-
+        set(kconfigs_projbuild ${kconfigs_projbuild} PARENT_SCOPE)
+        set(kconfigs ${kconfigs} PARENT_SCOPE)
 endfunction()

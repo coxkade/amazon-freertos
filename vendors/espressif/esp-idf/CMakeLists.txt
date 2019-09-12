@@ -61,6 +61,7 @@ endif()
 # Generate project configuration
 kconfig_process_config()
 
+if(EXISTS "${SDKCONFIG_CMAKE}")
 # Include sdkconfig.cmake so rest of the build knows the configuration
 include(${SDKCONFIG_CMAKE})
 
@@ -144,3 +145,4 @@ if(IDF_BUILD_ARTIFACTS)
 endif()
 
 set(BUILD_COMPONENTS ${BUILD_COMPONENTS} PARENT_SCOPE)
+endif() #EXISTS "${SDKCONFIG_CMAKE}"
