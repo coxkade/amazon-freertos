@@ -7,6 +7,9 @@ endif()
 if("${AFR_BOARD_NAME}" STREQUAL "esp32_wrover_kit")
     include("${CMAKE_CURRENT_LIST_DIR}/esp32_wrover_kit.cmake")
 endif()
+if(NOT DEFINED AWS_DEMOS_CONFIG_FILES_LOCATION)
+message(FATAL_ERROR "AWS_DEMOS_CONFIG_FILES_LOCATION Not defined")
+endif()
 
 # -------------------------------------------------------------------------------------------------
 # Compiler settings
@@ -69,7 +72,7 @@ target_include_directories(
         ${kernel_inc_dirs}
         "${AFR_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include/"
         "${aws_credentials_include}"
-        "${board_dir}/config_files"
+        "${AWS_DEMOS_CONFIG_FILES_LOCATION}"
         "$<$<NOT:${AFR_METADATA_MODE}>:${CMAKE_BINARY_DIR}/config>"
 )
 
@@ -188,7 +191,7 @@ target_link_libraries(
 # -------------------------------------------------------------------------------------------------
 # Amazon FreeRTOS demos and tests
 # -------------------------------------------------------------------------------------------------
-afr_glob_src(config_files DIRECTORY "${board_dir}/config_files")
+afr_glob_src(config_files DIRECTORY "${AWS_DEMOS_CONFIG_FILES_LOCATION}")
 
 if(AFR_IS_TESTING)
     set(exe_target aws_tests)
@@ -224,6 +227,34 @@ if(AFR_METADATA_MODE)
     return()
 endif()
 
+
+# -------------------------------------------------------------------------------------------------
+# The Override Project
+# -------------------------------------------------------------------------------------------------
+if(DEFINED ESP_OVERRIDE_EX_NAME)
+    message(STATUS "Overriding ESP Target to ${ESP_OVERRIDE_EX_NAME}")
+    set(exe_target ${ESP_OVERRIDE_EX_NAME})
+    # set(IDF_PROJECT_EXECUTABLE ${ESP_OVERRIDE_EX_NAME})
+
+    add_executable(
+        ${ESP_OVERRIDE_EX_NAME}
+        ${ESP_OVERRIDE_SORCES}
+    )
+
+    target_include_directories(
+        ${ESP_OVERRIDE_EX_NAME}
+        PUBLIC
+            $<TARGET_PROPERTY:AFR::kernel,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:AFR::ble_hal::mcu_port,INTERFACE_INCLUDE_DIRECTORIES>
+            ${ESP_OVERRIDE_INCLUDES}
+    )
+
+    target_link_libraries(
+        ${ESP_OVERRIDE_EX_NAME}
+        PRIVATE
+            ${ESP_OVERRIDE_LIBS}
+    )
+endif()
 
 # -------------------------------------------------------------------------------------------------
 # Additional build configurations
