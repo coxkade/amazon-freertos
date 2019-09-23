@@ -123,13 +123,6 @@ if(TARGET aws_demos)
     target_link_libraries(aws_demos PRIVATE ${demos_list})
 endif()
 
-if(DEFINED ESP_OVERRIDE_EX_NAME)
-    if(TARGET ${ESP_OVERRIDE_EX_NAME})
-        list(TRANSFORM AFR_DEMOS_ENABLED PREPEND "AFR::" OUTPUT_VARIABLE demos_list)
-        target_link_libraries(${ESP_OVERRIDE_EX_NAME} PRIVATE ${demos_list})
-    endif()
-endif()
-
 if(TARGET aws_tests)
     list(TRANSFORM AFR_TESTS_ENABLED PREPEND "AFR::" OUTPUT_VARIABLE tests_list)
     target_link_libraries(aws_tests PRIVATE ${tests_list})
