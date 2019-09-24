@@ -26,6 +26,8 @@
 #ifndef AWS_CLIENT_CREDENTIAL_KEYS_H
 #define AWS_CLIENT_CREDENTIAL_KEYS_H
 
+#error "This file should not be included"
+
 /*
  * @brief PEM-encoded client certificate.
  *

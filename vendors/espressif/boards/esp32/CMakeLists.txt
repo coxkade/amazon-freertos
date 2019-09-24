@@ -66,11 +66,14 @@ set(
     "${board_dir}/application_code/espressif_code/tcpip_adapter/include"
     "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/Compiler/GCC"
 )
+
+
 target_include_directories(
     AFR::kernel::mcu_port
     INTERFACE
         ${kernel_inc_dirs}
         "${AFR_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include/"
+        ${ESP_OVERRIDE_INCLUDES}
         "${aws_credentials_include}"
         "${AWS_DEMOS_CONFIG_FILES_LOCATION}"
         "$<$<NOT:${AFR_METADATA_MODE}>:${CMAKE_BINARY_DIR}/config>"
@@ -246,7 +249,6 @@ if(DEFINED ESP_OVERRIDE_EX_NAME)
         PUBLIC
             $<TARGET_PROPERTY:AFR::kernel,INTERFACE_INCLUDE_DIRECTORIES>
             $<TARGET_PROPERTY:AFR::ble_hal::mcu_port,INTERFACE_INCLUDE_DIRECTORIES>
-            ${ESP_OVERRIDE_INCLUDES}
     )
 
     target_link_libraries(

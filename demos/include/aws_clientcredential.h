@@ -26,6 +26,8 @@
 #ifndef __AWS_CLIENTCREDENTIAL__H__
 #define __AWS_CLIENTCREDENTIAL__H__
 
+#error "This file should not be included"
+
 /*
  * @brief MQTT Broker endpoint.
  *

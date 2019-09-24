@@ -3,11 +3,13 @@ afr_module(NAME pkcs11_implementation)
 set(inc_dir "${CMAKE_CURRENT_LIST_DIR}/include")
 set(test_dir "${CMAKE_CURRENT_LIST_DIR}/test")
 
+
 afr_module_include_dirs(
     ${AFR_CURRENT_MODULE}
     PUBLIC "${inc_dir}"
     # Requires standard/common/include/private/aws_default_root_certificates.h
     PRIVATE "${AFR_MODULES_C_SDK_DIR}/standard/common/include/private"
+    ${ESP_OVERRIDE_INCLUDES}
     # Requires aws_ota_codesigner_certificate.h
     "$<IF:${AFR_IS_TESTING},${AFR_MODULES_FREERTOS_PLUS_DIR}/aws/ota/test,${AFR_DEMOS_DIR}/include>"
 )
