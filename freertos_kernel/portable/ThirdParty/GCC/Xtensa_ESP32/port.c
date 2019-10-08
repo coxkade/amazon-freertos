@@ -108,6 +108,8 @@
 
 #include "esp_intr_alloc.h"
 
+#ifndef FREERTOS_USE_CUSTOM_KERNEL
+
 /* Defined in portasm.h */
 extern void _frxt_tick_timer_init(void);
 
@@ -426,3 +428,5 @@ void uxPortCompareSetExtram(volatile uint32_t *addr, uint32_t compare, uint32_t 
 uint32_t xPortGetTickRateHz(void) {
 	return (uint32_t)configTICK_RATE_HZ;
 }
+
+#endif //FREERTOS_USE_CUSTOM_KERNEL

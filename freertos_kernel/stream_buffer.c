@@ -43,6 +43,10 @@ task.h is included from an application file. */
 	#error configUSE_TASK_NOTIFICATIONS must be set to 1 to build stream_buffer.c
 #endif
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#endif //FREERTOS_USE_CUSTOM_KERNEL
+
 /* Lint e961, e9021 and e750 are suppressed as a MISRA exception justified
 because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
 for the header files above, but not in this file, in order to generate the

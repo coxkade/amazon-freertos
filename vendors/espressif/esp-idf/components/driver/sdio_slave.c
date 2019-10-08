@@ -100,6 +100,7 @@ The driver of FIFOs works as below:
 #include "freertos/semphr.h"
 #include "xtensa/core-macros.h"
 #include "driver/periph_ctrl.h"
+#include "driver/gpio.h"
 
 
 #define SDIO_SLAVE_CHECK(res, str, ret_val) do { if(!(res)){\

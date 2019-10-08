@@ -38,6 +38,10 @@ task.h is included from an application file. */
 #include "queue.h"
 #include "timers.h"
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#endif //FREERTOS_USE_CUSTOM_KERNEL
+
 #if ( INCLUDE_xTimerPendFunctionCall == 1 ) && ( configUSE_TIMERS == 0 )
 	#error configUSE_TIMERS must be set to 1 to make the xTimerPendFunctionCall() function available.
 #endif

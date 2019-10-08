@@ -35,10 +35,17 @@ afr_module(NAME secure_sockets_freertos_plus_tcp INTERFACE)
 
 set(src_dir "${CMAKE_CURRENT_LIST_DIR}/freertos_plus_tcp")
 
-afr_module_sources(
-    secure_sockets_freertos_plus_tcp INTERFACE
-    "${src_dir}/iot_secure_sockets.c"
-)
+if(NOT DEFINED AFR_SOCKET_OVERRIDE_SOURCE)
+    afr_module_sources(
+        secure_sockets_freertos_plus_tcp INTERFACE
+        "${src_dir}/iot_secure_sockets.c"
+    )
+else()
+    afr_module_sources(
+        secure_sockets_freertos_plus_tcp INTERFACE
+        ${AFR_SOCKET_OVERRIDE_SOURCE}
+    )
+endif() #if(NOT DEFINED AFR_SOCKET_OVERRIDE_SOURCE)
 
 afr_module_dependencies(
     secure_sockets_freertos_plus_tcp
@@ -54,11 +61,19 @@ afr_module(NAME secure_sockets_lwip INTERFACE)
 
 set(src_dir "${CMAKE_CURRENT_LIST_DIR}/lwip")
 
-afr_module_sources(
-    secure_sockets_lwip
-    INTERFACE
-        "${src_dir}/iot_secure_sockets.c"
-)
+if(NOT DEFINED AFR_SOCKET_OVERRIDE_SOURCE)
+    afr_module_sources(
+        secure_sockets_lwip
+        INTERFACE
+            "${src_dir}/iot_secure_sockets.c"
+    )
+else()
+    afr_module_sources(
+        secure_sockets_lwip
+        INTERFACE
+            ${AFR_SOCKET_OVERRIDE_SOURCE}
+    )
+endif() #if(NOT DEFINED AFR_SOCKET_OVERRIDE_SOURCE)
 
 afr_module_dependencies(
     secure_sockets_lwip

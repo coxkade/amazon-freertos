@@ -45,39 +45,74 @@ endif()
 afr_mcu_port(kernel)
 afr_glob_src(driver_src DIRECTORY "${esp_idf_dir}" RECURSE)
 
-set(
-    kernel_inc_dirs
-    "${esp_idf_dir}/components/app_update/include/"
-    "${esp_idf_dir}/components/bootloader_support/include"
-    "${esp_idf_dir}/components/esp32/include"
-    "${esp_idf_dir}/components/driver/include"
-    "${esp_idf_dir}/components/heap/include"
-    "${esp_idf_dir}/components/log/include"
-    "${esp_idf_dir}/components/nvs_flash/include"
-    "${esp_idf_dir}/components/pthread/include"
-    "${esp_idf_dir}/components/newlib/include"
-    "${esp_idf_dir}/components/soc/esp32/include"
-    "${esp_idf_dir}/components/soc/include"
-    "${esp_idf_dir}/components/spi_flash/include"
-    "${board_dir}/application_code/espressif_code/freertos/include"
-    "${board_dir}/application_code/espressif_code/ethernet/include"
-    "${board_dir}/application_code/espressif_code/mbedtls/port/include"
-    "${board_dir}/application_code/espressif_code/smartconfig_ack/include"
-    "${board_dir}/application_code/espressif_code/tcpip_adapter/include"
-    "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/Compiler/GCC"
-)
+if(NOT DEFINED AFR_KERNEL_INC_OVERRIDE)
+    set(
+        kernel_inc_dirs
+        "${esp_idf_dir}/components/app_update/include/"
+        "${esp_idf_dir}/components/bootloader_support/include"
+        "${esp_idf_dir}/components/esp32/include"
+        "${esp_idf_dir}/components/driver/include"
+        "${esp_idf_dir}/components/heap/include"
+        "${esp_idf_dir}/components/log/include"
+        "${esp_idf_dir}/components/nvs_flash/include"
+        "${esp_idf_dir}/components/pthread/include"
+        "${esp_idf_dir}/components/newlib/include"
+        "${esp_idf_dir}/components/soc/esp32/include"
+        "${esp_idf_dir}/components/soc/include"
+        "${esp_idf_dir}/components/spi_flash/include"
+        "${board_dir}/application_code/espressif_code/freertos/include"
+        "${board_dir}/application_code/espressif_code/ethernet/include"
+        "${board_dir}/application_code/espressif_code/mbedtls/port/include"
+        "${board_dir}/application_code/espressif_code/smartconfig_ack/include"
+        "${board_dir}/application_code/espressif_code/tcpip_adapter/include"
+        "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/Compiler/GCC"
+    )
 
+    target_include_directories(
+        AFR::kernel::mcu_port
+        INTERFACE
+            ${kernel_inc_dirs}
+            "${AFR_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include/"
+            ${ESP_OVERRIDE_INCLUDES}
+            "${aws_credentials_include}"
+            "${AWS_DEMOS_CONFIG_FILES_LOCATION}"
+            "$<$<NOT:${AFR_METADATA_MODE}>:${CMAKE_BINARY_DIR}/config>"
+    )
+else()
+    set(
+        kernel_inc_dirs
+        "${esp_idf_dir}/components/app_update/include/"
+        "${esp_idf_dir}/components/bootloader_support/include"
+        "${esp_idf_dir}/components/esp32/include"
+        "${esp_idf_dir}/components/driver/include"
+        "${esp_idf_dir}/components/heap/include"
+        "${esp_idf_dir}/components/log/include"
+        "${esp_idf_dir}/components/nvs_flash/include"
+        "${esp_idf_dir}/components/pthread/include"
+        "${esp_idf_dir}/components/newlib/include"
+        "${esp_idf_dir}/components/soc/esp32/include"
+        "${esp_idf_dir}/components/soc/include"
+        "${esp_idf_dir}/components/spi_flash/include"
+        ${AFR_KERNEL_INC_OVERRIDE}
+        "${board_dir}/application_code/espressif_code/freertos/include"
+        "${board_dir}/application_code/espressif_code/ethernet/include"
+        "${board_dir}/application_code/espressif_code/mbedtls/port/include"
+        "${board_dir}/application_code/espressif_code/smartconfig_ack/include"
+        "${board_dir}/application_code/espressif_code/tcpip_adapter/include"
+        "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/Compiler/GCC"
+    )
 
-target_include_directories(
-    AFR::kernel::mcu_port
-    INTERFACE
-        ${kernel_inc_dirs}
-        "${AFR_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include/"
-        ${ESP_OVERRIDE_INCLUDES}
-        "${aws_credentials_include}"
-        "${AWS_DEMOS_CONFIG_FILES_LOCATION}"
-        "$<$<NOT:${AFR_METADATA_MODE}>:${CMAKE_BINARY_DIR}/config>"
-)
+    target_include_directories(
+        AFR::kernel::mcu_port
+        INTERFACE
+            ${kernel_inc_dirs}
+            "${AFR_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include/"
+            ${ESP_OVERRIDE_INCLUDES}
+            "${aws_credentials_include}"
+            "${AWS_DEMOS_CONFIG_FILES_LOCATION}"
+            "$<$<NOT:${AFR_METADATA_MODE}>:${CMAKE_BINARY_DIR}/config>"
+    )
+endif() #if(NOT DEFINED AFR_KERNEL_INC_OVERRIDE)
 
 # WiFi
 afr_mcu_port(wifi)
@@ -152,12 +187,21 @@ target_sources(
 
 # FreeRTOS Plus TCP
 afr_mcu_port(freertos_plus_tcp)
-target_sources(
-    AFR::freertos_plus_tcp::mcu_port
-    INTERFACE
-        "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/BufferManagement/BufferAllocation_2.c"
-        "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/NetworkInterface/esp32/NetworkInterface.c"
-)
+if(NOT DEFINED AFR_BUFFER_SOURCE_OVERRIDE)
+    target_sources(
+        AFR::freertos_plus_tcp::mcu_port
+        INTERFACE
+            "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/BufferManagement/BufferAllocation_2.c"
+            "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/NetworkInterface/esp32/NetworkInterface.c"
+    )
+else()
+    target_sources(
+        AFR::freertos_plus_tcp::mcu_port
+        INTERFACE
+            ${AFR_BUFFER_SOURCE_OVERRIDE}
+            "${AFR_MODULES_FREERTOS_PLUS_DIR}/standard/freertos_plus_tcp/source/portable/NetworkInterface/esp32/NetworkInterface.c"
+    )
+endif() #if(NOT DEFINED AFR_BUFFER_SOURCE_OVERRIDE)
 
 # Secure sockets
 afr_mcu_port(secure_sockets)

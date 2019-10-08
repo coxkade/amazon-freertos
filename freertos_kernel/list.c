@@ -30,6 +30,10 @@
 #include "FreeRTOS.h"
 #include "list.h"
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#endif //FREERTOS_USE_CUSTOM_KERNEL
+
 /*-----------------------------------------------------------
  * PUBLIC LIST API documented in list.h
  *----------------------------------------------------------*/

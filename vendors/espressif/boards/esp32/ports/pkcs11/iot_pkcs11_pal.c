@@ -55,6 +55,15 @@ enum eObjectHandles
 };
 /*-----------------------------------------------------------*/
 
+
+#if 1 != _INTERNAL_PARAMS_EMPTY()
+#error "_INTERNAL_PARAMS_EMPTY failed"
+#endif
+
+#if 1 == _INTERNAL_PARAMS_EMPTY("Hello")
+#error "_INTERNAL_PARAMS_EMPTY returned 1"
+#endif
+
 static void initialize_nvs_partition()
 {
     static bool nvs_inited;

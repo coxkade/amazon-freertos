@@ -7,12 +7,13 @@ if(DEFINED AWS_DEMOS_CONFIG_FILES_LOCATION_OVERRIDE)
     message(STATUS "Using Override Demo Config")
 else()
     set(AWS_DEMOS_CONFIG_FILES_LOCATION ../../../config_files)
-    message(STATUS "Using Standard Demo Config")
+    message(status "Using Standard Demo Config")
 endif()
 if(NOT DEFINED AWS_DEMOS_CONFIG_FILES_LOCATION)
 message(FATAL_ERROR "AWS_DEMOS_CONFIG_FILES_LOCATION Not defined")
 endif()
 
+if(NOT DEFINED AFR_KERNEL_INC_OVERRIDE)
 set(
     COMPONENT_ADD_INCLUDEDIRS
     include
@@ -20,11 +21,26 @@ set(
     ${AMAZON_FREERTOS_KERNEL_DIR}/include
     ${AMAZON_FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include
 )
+else()
+message(STATUS "AFR_KERNEL_INC_OVERRIDE: ${AFR_KERNEL_INC_OVERRIDE}")
+set(
+    COMPONENT_ADD_INCLUDEDIRS
+    ${AWS_DEMOS_CONFIG_FILES_LOCATION}
+    ${AFR_KERNEL_INC_OVERRIDE}
+    ${AMAZON_FREERTOS_KERNEL_DIR}/include
+    ${AMAZON_FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32/include
+    include
+)
+endif() #if(NOT DEFINED AFR_KERNEL_INC_OVERRIDE)
 
 # Edit following two lines to set component requirements (see docs)
 set(COMPONENT_REQUIRES )
 set(COMPONENT_PRIV_REQUIRES )
 
+if(NOT DEFINED AFR_KERNEL_SOURCE_OVERRIDE_DIR)
 set(COMPONENT_SRCDIRS . ${AMAZON_FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32 ${AMAZON_FREERTOS_KERNEL_DIR})
+else()
+set(COMPONENT_SRCDIRS ${AMAZON_FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Xtensa_ESP32 ${AFR_KERNEL_SOURCE_OVERRIDE_DIR})
+endif() #AFR_KERNEL_SOURCE_OVERRIDE_DIR
 
 register_component()
