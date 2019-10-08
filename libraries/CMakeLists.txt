@@ -1,6 +1,8 @@
 # FreeRTOS module.
 afr_module(NAME freertos INTERFACE KERNEL)
 afr_glob_src(freertos_inc DIRECTORY "${AFR_KERNEL_DIR}/include" RECURSE)
+if(NOT DEFINED AFR_KERNEL_SOURCE_OVERRIDES)
+message(STATUS "\r\n Using default Kernel Source \r\n")
 afr_module_sources(
     freertos
     INTERFACE
@@ -12,11 +14,27 @@ afr_module_sources(
         "${AFR_KERNEL_DIR}/timers.c"
         ${freertos_inc}
 )
+else()
+message(STATUS "\r\n Using Override Kernel Source \r\n")
+afr_module_sources(
+    freertos
+    INTERFACE
+        ${AFR_KERNEL_SOURCE_OVERRIDES}
+)
+endif() #if(NOT DEFINED AFR_KERNEL_SOURCE_OVERRIDES)
+if(NOT DEFINED AFR_KERNEL_INC_OVERRIDE)
 afr_module_include_dirs(
     freertos
     INTERFACE
         "${AFR_KERNEL_DIR}/include"
 )
+else()
+afr_module_include_dirs(
+    freertos
+    INTERFACE
+        "${AFR_KERNEL_INC_OVERRIDE}"
+)
+endif() #if(NOT DEFINED AFR_KERNEL_INC_OVERRIDE)
 
 # Kernel module.
 afr_module(NAME kernel INTERNAL KERNEL)
