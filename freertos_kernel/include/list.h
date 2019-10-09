@@ -60,6 +60,11 @@
 #ifndef LIST_H
 #define LIST_H
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#else
+
+
 /*
  * The list structure members are modified from within interrupts, and therefore
  * by rights should be declared volatile.  However, they are only modified in a
@@ -410,3 +415,4 @@ UBaseType_t uxListRemove( ListItem_t * const pxItemToRemove ) PRIVILEGED_FUNCTIO
 
 #endif
 
+#endif

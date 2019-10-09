@@ -28,6 +28,13 @@
 #ifndef MPU_WRAPPERS_H
 #define MPU_WRAPPERS_H
 
+#ifndef INC_FREERTOS_H
+	#error FreeRTOS.h must be included before list.h
+#endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
+
 /* This file redefines API functions to be called through a wrapper macro, but
 only for ports that are using the MPU. */
 #ifdef portUSING_MPU_WRAPPERS
@@ -181,6 +188,6 @@ only for ports that are using the MPU. */
 
 #endif /* portUSING_MPU_WRAPPERS */
 
-
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* MPU_WRAPPERS_H */
 

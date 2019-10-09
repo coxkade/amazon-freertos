@@ -32,6 +32,9 @@
 #ifndef INC_FREERTOS_H
 	#error "include FreeRTOS.h must appear in source files before include timers.h"
 #endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
 
 /*lint -save -e537 This headers are only multiply included if the application code
 happens to also be including task.h. */
@@ -1289,6 +1292,8 @@ BaseType_t xTimerGenericCommand( TimerHandle_t xTimer, const BaseType_t xCommand
 #ifdef __cplusplus
 }
 #endif
+
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* TIMERS_H */
 
 

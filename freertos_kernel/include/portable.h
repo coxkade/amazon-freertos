@@ -43,6 +43,12 @@ to make it clear that new projects should not use it, support for the port
 specific constants has been moved into the deprecated_definitions.h header
 file. */
 #include "deprecated_definitions.h"
+#ifndef INC_FREERTOS_H
+	#error FreeRTOS.h must be included before list.h
+#endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
 
 /* If portENTER_CRITICAL is not defined then including deprecated_definitions.h
 did not result in a portmacro.h header file being included - and it should be
@@ -177,5 +183,6 @@ void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 }
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* PORTABLE_H */
 

@@ -28,6 +28,14 @@
 #ifndef DEPRECATED_DEFINITIONS_H
 #define DEPRECATED_DEFINITIONS_H
 
+#ifndef INC_FREERTOS_H
+	#error "include FreeRTOS.h" must appear in source files before "include event_groups.h"
+#endif
+
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#else
+
 
 /* Each FreeRTOS port has a unique portmacro.h header file.  Originally a
 pre-processor definition was used to ensure the pre-processor found the correct
@@ -275,5 +283,6 @@ projects should not use them. */
 	#include "../../Source/portable/IAR/78K0R/portmacro.h"
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* DEPRECATED_DEFINITIONS_H */
 

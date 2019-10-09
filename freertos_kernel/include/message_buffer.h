@@ -65,6 +65,14 @@
 /* Message buffers are built onto of stream buffers. */
 #include "stream_buffer.h"
 
+#ifndef INC_FREERTOS_H
+	#error FreeRTOS.h must be included before list.h
+#endif
+
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
+
 #if defined( __cplusplus )
 extern "C" {
 #endif
@@ -796,4 +804,5 @@ BaseType_t xMessageBufferReceiveCompletedFromISR( MessageBufferHandle_t xStreamB
 } /* extern "C" */
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif	/* !defined( FREERTOS_MESSAGE_BUFFER_H ) */

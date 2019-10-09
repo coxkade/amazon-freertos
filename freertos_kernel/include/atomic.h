@@ -53,6 +53,10 @@
     #error "include FreeRTOS.h must appear in source files before include atomic.h"
 #endif
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#else
+
 /* Standard includes. */
 #include <stdint.h>
 
@@ -545,3 +549,4 @@ static portFORCE_INLINE uint32_t Atomic_XOR_u32(
 #endif
 
 #endif /* ATOMIC_H */
+#endif //FREERTOS_USE_CUSTOM_KERNEL

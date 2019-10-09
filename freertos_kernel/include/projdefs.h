@@ -28,6 +28,13 @@
 #ifndef PROJDEFS_H
 #define PROJDEFS_H
 
+#ifndef INC_FREERTOS_H
+	#error FreeRTOS.h must be included before list.h
+#endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
+
 /*
  * Defines the prototype to which task functions must conform.  Defined in this
  * file to ensure the type is known before portable.h is included.
@@ -117,7 +124,7 @@ itself. */
 #define pdLITTLE_ENDIAN					pdFREERTOS_LITTLE_ENDIAN
 #define pdBIG_ENDIAN					pdFREERTOS_BIG_ENDIAN
 
-
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* PROJDEFS_H */
 
 

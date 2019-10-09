@@ -32,6 +32,9 @@
 #ifndef INC_FREERTOS_H
 	#error "include FreeRTOS.h" must appear in source files before "include queue.h"
 #endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
 
 #ifdef __cplusplus
 extern "C" {
@@ -1651,5 +1654,6 @@ uint8_t ucQueueGetQueueType( QueueHandle_t xQueue ) PRIVILEGED_FUNCTION;
 }
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* QUEUE_H */
 

@@ -31,6 +31,10 @@
 #ifndef INC_FREERTOS_H
 	#error "include FreeRTOS.h" must appear in source files before "include semphr.h"
 #endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
+
 
 #include "queue.h"
 
@@ -1135,6 +1139,7 @@ typedef QueueHandle_t SemaphoreHandle_t;
  */
 #define uxSemaphoreGetCount( xSemaphore ) uxQueueMessagesWaiting( ( QueueHandle_t ) ( xSemaphore ) )
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* SEMAPHORE_H */
 
 

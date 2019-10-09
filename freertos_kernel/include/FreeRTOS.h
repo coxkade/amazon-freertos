@@ -28,6 +28,10 @@
 #ifndef INC_FREERTOS_H
 #define INC_FREERTOS_H
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#else
+
 /*
  * Include the generic headers required for the FreeRTOS port being used.
  */
@@ -1286,5 +1290,6 @@ typedef StaticStreamBuffer_t StaticMessageBuffer_t;
 }
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* INC_FREERTOS_H */
 

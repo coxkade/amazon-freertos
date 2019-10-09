@@ -40,8 +40,8 @@ task.h is included from an application file. */
 #include "event_groups.h"
 
 #ifdef FREERTOS_USE_CUSTOM_KERNEL
-#error "Using a custom kernel this file should not be built"
-#endif //FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
 
 /* Lint e961, e750 and e9021 are suppressed as a MISRA exception justified
 because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
@@ -754,4 +754,4 @@ BaseType_t xWaitConditionMet = pdFALSE;
 #endif /* configUSE_TRACE_FACILITY */
 /*-----------------------------------------------------------*/
 
-
+#endif //FREERTOS_USE_CUSTOM_KERNEL

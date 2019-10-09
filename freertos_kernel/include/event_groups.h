@@ -32,6 +32,10 @@
 	#error "include FreeRTOS.h" must appear in source files before "include event_groups.h"
 #endif
 
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+#error "Using a custom kernel this file should not be built"
+#else
+
 /* FreeRTOS includes. */
 #include "timers.h"
 
@@ -752,6 +756,7 @@ void vEventGroupClearBitsCallback( void *pvEventGroup, const uint32_t ulBitsToCl
 }
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* EVENT_GROUPS_H */
 
 

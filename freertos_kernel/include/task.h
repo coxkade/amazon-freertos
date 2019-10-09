@@ -32,8 +32,13 @@
 #ifndef INC_FREERTOS_H
 	#error "include FreeRTOS.h must appear in source files before include task.h"
 #endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
+
 
 #include "list.h"
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -2415,7 +2420,7 @@ void vTaskInternalSetTimeOutState( TimeOut_t * const pxTimeOut ) PRIVILEGED_FUNC
 #ifdef __cplusplus
 }
 #endif
+
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif /* INC_TASK_H */
-
-
 

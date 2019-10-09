@@ -51,6 +51,13 @@
 #ifndef STREAM_BUFFER_H
 #define STREAM_BUFFER_H
 
+#ifndef INC_FREERTOS_H
+	#error "include FreeRTOS.h" must appear in source files before "include semphr.h"
+#endif
+#ifdef FREERTOS_USE_CUSTOM_KERNEL
+    #error "Using a custom kernel this file should not be built"
+#else
+
 #if defined( __cplusplus )
 extern "C" {
 #endif
@@ -852,4 +859,5 @@ size_t xStreamBufferNextMessageLengthBytes( StreamBufferHandle_t xStreamBuffer )
 }
 #endif
 
+#endif //FREERTOS_USE_CUSTOM_KERNEL
 #endif	/* !defined( STREAM_BUFFER_H ) */
