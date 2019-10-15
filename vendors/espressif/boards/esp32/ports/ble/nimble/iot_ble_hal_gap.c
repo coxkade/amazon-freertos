@@ -613,7 +613,7 @@ BTStatus_t prvBTSetAdvData( uint8_t ucAdapterIf,
         fields.svc_data_uuid128_len = usServiceDataLen;
     }
 
-    if( pxServiceUuid != NULL )
+    if( pxServiceUuid != NULL && 0 != xNbServices)
     {
         if( pxServiceUuid->ucType == eBTuuidType16 )
         {
