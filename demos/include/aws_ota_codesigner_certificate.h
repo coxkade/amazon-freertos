@@ -26,6 +26,8 @@
 #ifndef __AWS_CODESIGN_KEYS__H__
 #define __AWS_CODESIGN_KEYS__H__
 
+#error "Kade Test Error"
+
 /*
  * PEM-encoded code signer certificate
  *

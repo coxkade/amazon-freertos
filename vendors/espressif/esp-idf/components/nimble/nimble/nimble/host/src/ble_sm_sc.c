@@ -417,10 +417,11 @@ ble_sm_sc_random_rx(struct ble_sm_proc *proc, struct ble_sm_result *res)
     if (proc->flags & BLE_SM_PROC_F_INITIATOR ||
         ble_sm_sc_responder_verifies_random(proc)) {
 
-        BLE_HS_LOG(DEBUG, "tk=");
+        BLE_HS_LOG(INFO, "tk=");
         ble_hs_log_flat_buf(proc->tk, 16);
-        BLE_HS_LOG(DEBUG, "\n");
+        BLE_HS_LOG(INFO, "\n");
 
+        BLE_HS_LOG(INFO, "ble_sm_peer_pair_rand called by %s\n", __FUNCTION__);
         rc = ble_sm_alg_f4(proc->pub_key_peer.x, ble_sm_sc_pub_key,
                            ble_sm_peer_pair_rand(proc), proc->ri,
                            confirm_val);
@@ -659,6 +660,7 @@ ble_sm_sc_dhkey_check_exec(struct ble_sm_proc *proc, struct ble_sm_result *res,
         goto err;
     }
 
+    BLE_HS_LOG(INFO, "Calling ble_sm_peer_pair_rand from %s\n", __FUNCTION__);
     rc = ble_sm_alg_f6(proc->mackey, ble_sm_our_pair_rand(proc),
                        ble_sm_peer_pair_rand(proc), proc->tk, iocap,
                        our_addr.type, our_addr.val, peer_addr.type,
@@ -710,10 +712,19 @@ ble_sm_dhkey_check_process(struct ble_sm_proc *proc,
     }
 
     ble_sm_sc_dhkey_addrs(proc, &our_addr, &peer_addr);
-    BLE_HS_LOG(DEBUG, "tk=");
+    BLE_HS_LOG(INFO, "tk=");
     ble_hs_log_flat_buf(proc->tk, 16);
-    BLE_HS_LOG(DEBUG, "\n");
+    BLE_HS_LOG(INFO, "\n");
 
+    BLE_HS_LOG(INFO, "ble_sm_peer_pair_rand called by %s\n", __FUNCTION__);
+    BLE_HS_LOG(INFO, "peer_addr.type: %d\r\n", peer_addr.type);
+    BLE_HS_LOG(INFO, "Peer Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+    peer_addr.val[0], peer_addr.val[1], peer_addr.val[2],
+    peer_addr.val[3], peer_addr.val[4], peer_addr.val[5]);
+    BLE_HS_LOG(INFO, "our_addr.type: %d\r\n", our_addr.type);
+    BLE_HS_LOG(INFO, "Our Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+    our_addr.val[0], our_addr.val[1], our_addr.val[2],
+    our_addr.val[3], our_addr.val[4], our_addr.val[5]);
     res->app_status = ble_sm_alg_f6(proc->mackey,
                                     ble_sm_peer_pair_rand(proc),
                                     ble_sm_our_pair_rand(proc),
@@ -722,6 +733,7 @@ ble_sm_dhkey_check_process(struct ble_sm_proc *proc,
                                     our_addr.type, our_addr.val,
                                     exp_value);
     if (res->app_status != 0) {
+        BLE_HS_LOG(INFO, "ble_sm_alg_f6 failed\n");
         res->sm_err = BLE_SM_ERR_UNSPECIFIED;
         res->enc_cb = 1;
         return;
@@ -729,6 +741,7 @@ ble_sm_dhkey_check_process(struct ble_sm_proc *proc,
 
     if (memcmp(cmd->value, exp_value, 16) != 0) {
         /* Random number mismatch. */
+        BLE_HS_LOG(INFO, "The Numbers do not match\n");
         res->sm_err = BLE_SM_ERR_DHKEY;
         res->app_status = BLE_HS_SM_US_ERR(BLE_SM_ERR_DHKEY);
         res->enc_cb = 1;
@@ -746,6 +759,7 @@ ble_sm_dhkey_check_process(struct ble_sm_proc *proc,
 
     if (ble_sm_proc_can_advance(proc)) {
         if (proc->flags & BLE_SM_PROC_F_INITIATOR) {
+            BLE_HS_LOG(INFO, "Starting to encode the data\n");
             proc->state = BLE_SM_PROC_STATE_ENC_START;
         }
 

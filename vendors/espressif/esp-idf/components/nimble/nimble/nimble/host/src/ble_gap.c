@@ -1318,7 +1318,7 @@ ble_gap_rx_conn_complete(struct hci_le_conn_complete *evt, uint8_t instance)
     struct ble_gap_event event;
     struct ble_hs_conn *conn;
     int rc;
-
+    BLE_HS_LOG(INFO, "%s: Started\n", __FUNCTION__);
     STATS_INC(ble_gap_stats, rx_conn_complete);
 
     /* in that case *only* status field is valid so we determine role
@@ -1410,8 +1410,18 @@ ble_gap_rx_conn_complete(struct hci_le_conn_complete *evt, uint8_t instance)
         ble_gap_slave_reset_state(instance);
     }
 
+    BLE_HS_LOG(INFO, "%s setting bhc_peer_addr\n", __FUNCTION__);
     conn->bhc_peer_addr.type = evt->peer_addr_type;
     memcpy(conn->bhc_peer_addr.val, evt->peer_addr, 6);
+
+    BLE_HS_LOG(INFO, " conn->bhc_peer_addr.type: %d\n",  conn->bhc_peer_addr.type);
+    BLE_HS_LOG(INFO, "conn->bhc_peer_addr: %02X:%02X:%02X:%02X:%02X:%02X\n",
+    conn->bhc_peer_addr.val[0], conn->bhc_peer_addr.val[1], conn->bhc_peer_addr.val[2],
+    conn->bhc_peer_addr.val[3], conn->bhc_peer_addr.val[4], conn->bhc_peer_addr.val[5]);
+    if(BLE_ADDR_IS_RPA(&conn->bhc_peer_addr))
+    {
+        BLE_HS_LOG(INFO, "Address is RPA\n");
+    }
 
     conn->bhc_our_rpa_addr.type = BLE_ADDR_RANDOM;
     memcpy(conn->bhc_our_rpa_addr.val, evt->local_rpa, 6);
@@ -1422,6 +1432,7 @@ ble_gap_rx_conn_complete(struct hci_le_conn_complete *evt, uint8_t instance)
      */
     if (memcmp(BLE_ADDR_ANY->val, evt->peer_rpa, 6) == 0) {
         if (BLE_ADDR_IS_RPA(&conn->bhc_peer_addr)) {
+            BLE_HS_LOG(INFO, "%s: Saving the RPA Address\n", __FUNCTION__);
             conn->bhc_peer_rpa_addr = conn->bhc_peer_addr;
         }
     } else {
@@ -3373,6 +3384,8 @@ ble_gap_conn_create_tx(uint8_t own_addr_type, const ble_addr_t *peer_addr,
     struct hci_create_conn hcc;
     int rc;
 
+    BLE_HS_LOG(INFO,"%s started\n", __FUNCTION__);
+
     hcc.scan_itvl = params->scan_itvl;
     hcc.scan_window = params->scan_window;
 
@@ -4300,8 +4313,10 @@ ble_gap_security_initiate(uint16_t conn_handle)
          * is found, perform the encryption procedure rather than the pairing
          * procedure.
          */
+    	BLE_HS_LOG(INFO, "%s Looking for LTK Key\n", __FUNCTION__);
         rc = ble_store_read_peer_sec(&key_sec, &value_sec);
         if (rc == 0 && value_sec.ltk_present) {
+        	BLE_HS_LOG(INFO, "%s Starting the encryption process\n", __FUNCTION__);
             rc = ble_sm_enc_initiate(conn_handle, value_sec.key_size,
                                      value_sec.ltk, value_sec.ediv,
                                      value_sec.rand_num,
@@ -4310,12 +4325,14 @@ ble_gap_security_initiate(uint16_t conn_handle)
                 goto done;
             }
         } else {
+        	BLE_HS_LOG(INFO, "%s Starting the pairing process\n", __FUNCTION__);
             rc = ble_sm_pair_initiate(conn_handle);
             if (rc != 0) {
                 goto done;
             }
         }
     } else {
+    	BLE_HS_LOG(INFO, "%s Initializing the sm slave\n", __FUNCTION__);
         rc = ble_sm_slave_initiate(conn_handle);
         if (rc != 0) {
             goto done;

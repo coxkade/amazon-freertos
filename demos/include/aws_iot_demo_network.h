@@ -31,7 +31,7 @@
 #ifndef AWS_IOT_DEMO_NETWORK_H_
 #define AWS_IOT_DEMO_NETWORK_H_
 
-
+#error "Kade Test Error"
 
 /* The config header is always included first. */
 #include "iot_config.h"

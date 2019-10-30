@@ -404,6 +404,9 @@ BTStatus_t _setAdvData( IotBleAdvertisementParams_t * pAdvParams )
     pParams.usAdvertisingEventProperties = BTAdvInd;
 
     pParams.xAddrType = BTAddrTypePublic;
+    // pParams.xAddrType = BTAddrTypeRandom;
+    // pParams.xAddrType = BTAddrTypeStaticRandom;
+    // pParams.xAddrType = BTAddrTypeResolvable;
     pParams.ucChannelMap = 0;
     pParams.ucPrimaryAdvertisingPhy = 0;
     pParams.ucSecondaryAdvertisingPhy = 0;

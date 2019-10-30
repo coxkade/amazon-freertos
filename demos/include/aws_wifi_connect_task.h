@@ -33,6 +33,7 @@
 
 #include "FreeRTOS.h"
 
+#error "Kade Test Error"
 /**
  * @brief Initialize the task which connects to provisioned WiFi networks.
  *

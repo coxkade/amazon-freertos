@@ -91,21 +91,16 @@ static const struct ble_hs_hci_evt_le_dispatch_entry
         ble_hs_hci_evt_le_dispatch[] = {
     { BLE_HCI_LE_SUBEV_CONN_COMPLETE, ble_hs_hci_evt_le_conn_complete },
     { BLE_HCI_LE_SUBEV_ADV_RPT, ble_hs_hci_evt_le_adv_rpt },
-    { BLE_HCI_LE_SUBEV_CONN_UPD_COMPLETE,
-          ble_hs_hci_evt_le_conn_upd_complete },
+    { BLE_HCI_LE_SUBEV_CONN_UPD_COMPLETE, ble_hs_hci_evt_le_conn_upd_complete },
     { BLE_HCI_LE_SUBEV_LT_KEY_REQ, ble_hs_hci_evt_le_lt_key_req },
     { BLE_HCI_LE_SUBEV_REM_CONN_PARM_REQ, ble_hs_hci_evt_le_conn_parm_req },
     { BLE_HCI_LE_SUBEV_ENH_CONN_COMPLETE, ble_hs_hci_evt_le_conn_complete },
     { BLE_HCI_LE_SUBEV_DIRECT_ADV_RPT, ble_hs_hci_evt_le_dir_adv_rpt },
-    { BLE_HCI_LE_SUBEV_PHY_UPDATE_COMPLETE,
-        ble_hs_hci_evt_le_phy_update_complete },
+    { BLE_HCI_LE_SUBEV_PHY_UPDATE_COMPLETE, ble_hs_hci_evt_le_phy_update_complete },
     { BLE_HCI_LE_SUBEV_EXT_ADV_RPT, ble_hs_hci_evt_le_ext_adv_rpt },
-    { BLE_HCI_LE_SUBEV_RD_REM_USED_FEAT,
-            ble_hs_hci_evt_le_rd_rem_used_feat_complete },
-    { BLE_HCI_LE_SUBEV_SCAN_TIMEOUT,
-            ble_hs_hci_evt_le_scan_timeout },
-    { BLE_HCI_LE_SUBEV_ADV_SET_TERMINATED,
-            ble_hs_hci_evt_le_adv_set_terminated },
+    { BLE_HCI_LE_SUBEV_RD_REM_USED_FEAT, ble_hs_hci_evt_le_rd_rem_used_feat_complete },
+    { BLE_HCI_LE_SUBEV_SCAN_TIMEOUT, ble_hs_hci_evt_le_scan_timeout },
+    { BLE_HCI_LE_SUBEV_ADV_SET_TERMINATED, ble_hs_hci_evt_le_adv_set_terminated },
 };
 
 #define BLE_HS_HCI_EVT_LE_DISPATCH_SZ \
@@ -141,6 +136,36 @@ ble_hs_hci_evt_le_dispatch_find(uint8_t event_code)
     }
 
     return NULL;
+}
+
+/**
+ * @brief Simple function to format a data string
+ * 
+ * @param data 
+ * @param len 
+ * @return char* 
+ */
+static char * kade_get_data_string(uint8_t *data, int len)
+{
+    #define kade_get_data_string_buffer_size (250)
+    struct local_buffer_s { char data[kade_get_data_string_buffer_size]; };
+    static struct local_buffer_s rv_buffer;
+    static struct local_buffer_s work_buffer;
+    if(NULL == data || 0 >= len)
+    {
+        memset(rv_buffer.data, 0, kade_get_data_string_buffer_size);
+    }
+    else
+    {
+        snprintf(rv_buffer.data, kade_get_data_string_buffer_size, "%02X ", data[0]);
+        for(int i=1; i<len; i++)
+        {
+            snprintf(work_buffer.data, kade_get_data_string_buffer_size, "%s%02X ", rv_buffer.data, data[i]);
+            memcpy(rv_buffer.data, work_buffer.data, kade_get_data_string_buffer_size);
+        }
+    }
+
+    return rv_buffer.data;
 }
 
 static int
@@ -317,7 +342,15 @@ ble_hs_hci_evt_le_conn_complete(uint8_t subevent, uint8_t *data, int len)
         ( len < BLE_HCI_LE_ENH_CONN_COMPLETE_LEN)) {
         return BLE_HS_ECONTROLLER;
     }
-
+    // #if MYNEWT_VAL(BLE_EXT_ADV)
+    // #error "Test Error"
+    // #endif
+    // #ifdef MYNEWT_VAL_BLE_EXT_ADV
+    // BLE_HS_LOG(INFO, "MYNEWT_VAL_BLE_EXT_ADV: %d\n", MYNEWT_VAL_BLE_EXT_ADV);
+    // #else
+    // BLE_HS_LOG(INFO, "MYNEWT_VAL_BLE_EXT_ADV Not Defined\n");
+    // #endif //MYNEWT_VAL_BLE_EXT_ADV
+    BLE_HS_LOG(INFO, "%s decoding %s\n", __FUNCTION__, kade_get_data_string(data, len));
     memset(&evt, 0, sizeof(evt));
 
     evt.subevent_code = data[0];
@@ -334,8 +367,15 @@ ble_hs_hci_evt_le_conn_complete(uint8_t subevent, uint8_t *data, int len)
         if (subevent == BLE_HCI_LE_SUBEV_ENH_CONN_COMPLETE) {
             memcpy(evt.local_rpa, data + 12, BLE_DEV_ADDR_LEN);
             memcpy(evt.peer_rpa, data + 18, BLE_DEV_ADDR_LEN);
+            BLE_HS_LOG(INFO, "Local RPA %02X:%02X:%02X:%02X:%02X:%02X\n",
+            evt.local_rpa[0], evt.local_rpa[1], evt.local_rpa[2], 
+            evt.local_rpa[3], evt.local_rpa[4], evt.local_rpa[5]);
+            BLE_HS_LOG(INFO, "Peer RPA %02X:%02X:%02X:%02X:%02X:%02X\n",
+            evt.peer_rpa[0], evt.peer_rpa[1], evt.peer_rpa[2], 
+            evt.peer_rpa[3], evt.peer_rpa[4], evt.peer_rpa[5]);
             extended_offset = 12;
         } else {
+            BLE_HS_LOG(INFO, "Not Stuffing RPA\n");
             memset(evt.local_rpa, 0, BLE_DEV_ADDR_LEN);
             memset(evt.peer_rpa, 0, BLE_DEV_ADDR_LEN);
         }
@@ -358,6 +398,7 @@ ble_hs_hci_evt_le_conn_complete(uint8_t subevent, uint8_t *data, int len)
         return 0;
     }
 #endif
+    BLE_HS_LOG(INFO, "%s calling ble_gap_rx_conn_complete\n", __FUNCTION__);
     return ble_gap_rx_conn_complete(&evt, 0);
 }
 
@@ -641,6 +682,7 @@ ble_hs_hci_evt_le_adv_set_terminated(uint8_t subevent, uint8_t *data, int len)
 
     if (evt.status == 0) {
         /* ignore return code as we need to terminate advertising set anyway */
+        BLE_HS_LOG(INFO, "%s calling ble_gap_rx_conn_complete\n", __FUNCTION__);
         ble_gap_rx_conn_complete(&pend_conn_complete, evt.adv_handle);
     }
     ble_gap_rx_adv_set_terminated(&evt);

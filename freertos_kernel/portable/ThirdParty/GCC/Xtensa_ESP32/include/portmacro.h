@@ -66,6 +66,8 @@
 #ifndef PORTMACRO_H
 #define PORTMACRO_H
 
+#error "This is the wrong header"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -84,6 +86,7 @@ extern "C" {
 
 #include <esp_heap_caps.h>
 #include "soc/soc_memory_layout.h"
+
 
 //#include "xtensa_context.h"
 

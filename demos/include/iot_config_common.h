@@ -28,6 +28,8 @@
 #ifndef IOT_CONFIG_COMMON_H_
 #define IOT_CONFIG_COMMON_H_
 
+#error "Kade Test Error"
+
 /* FreeRTOS include. */
 #include "FreeRTOS.h"
 

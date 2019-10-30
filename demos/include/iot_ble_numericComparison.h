@@ -30,6 +30,8 @@
 #ifndef _AWS_BLE_NUMERIC_COMPARISON_H_
 #define _AWS_BLE_NUMERIC_COMPARISON_H_
 
+#error "Kade Test Error"
+
 #include "queue.h"
 
 typedef struct

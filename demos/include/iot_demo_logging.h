@@ -31,6 +31,8 @@
 #ifndef IOT_DEMO_LOGGING_H_
 #define IOT_DEMO_LOGGING_H_
 
+#error "Kade Test Error"
+
 /* The config header is always included first. */
 #include "iot_config.h"
 

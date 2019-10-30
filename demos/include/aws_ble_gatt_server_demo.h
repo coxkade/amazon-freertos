@@ -30,6 +30,8 @@
 #ifndef AWS_BLE_GATT_SERVER_DEMO_H_
 #define AWS_BLE_GATT_SERVER_DEMO_H_
 
+#error "Kade Test Error"
+
 #include "FreeRTOS.h"
 /* The config header is always included first. */
 #include "iot_config.h"

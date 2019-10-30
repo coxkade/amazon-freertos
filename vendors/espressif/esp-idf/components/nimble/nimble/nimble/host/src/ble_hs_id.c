@@ -20,6 +20,7 @@
 #include <string.h>
 #include "host/ble_hs_id.h"
 #include "ble_hs_priv.h"
+#include "host/ble_hs_log.h"
 
 static uint8_t ble_hs_id_pub[6];
 static uint8_t ble_hs_id_rnd[6];
@@ -27,9 +28,13 @@ static uint8_t ble_hs_id_rnd[6];
 void
 ble_hs_id_set_pub(const uint8_t *pub_addr)
 {
+    BLE_HS_LOG(INFO, "Setting ble_hs_id_pub\n");
     ble_hs_lock();
     memcpy(ble_hs_id_pub, pub_addr, 6);
     ble_hs_unlock();
+    BLE_HS_LOG(INFO, "ble_hs_id_pub %02X:%02X:%02X:%02X:%02X:%02X\n",
+    ble_hs_id_pub[0], ble_hs_id_pub[1], ble_hs_id_pub[2],
+    ble_hs_id_pub[3], ble_hs_id_pub[4], ble_hs_id_pub[5]);
 }
 
 int
@@ -126,6 +131,7 @@ ble_hs_id_addr(uint8_t id_addr_type, const uint8_t **out_id_addr,
         break;
 
     case BLE_ADDR_RANDOM:
+        BLE_HS_LOG(INFO, "%s Handling BLE_ADDR_RANDOM\n", __FUNCTION__);
         id_addr = ble_hs_id_rnd;
         nrpa = (ble_hs_id_rnd[5] & 0xc0) == 0;
         break;
@@ -245,16 +251,18 @@ ble_hs_id_infer_auto(int privacy, uint8_t *out_addr_type)
     ble_hs_lock();
 
     if (privacy) {
+        BLE_HS_LOG(INFO, "Privacy Set\n");
         addr_types = priv_addr_types;
         num_addr_types = sizeof priv_addr_types / sizeof priv_addr_types[0];
     } else {
+        BLE_HS_LOG(INFO, "Privacy not Set\n");
         addr_types = pub_addr_types;
         num_addr_types = sizeof pub_addr_types / sizeof pub_addr_types[0];
     }
 
     for (i = 0; i < num_addr_types; i++) {
         addr_type = addr_types[i];
-
+        BLE_HS_LOG(INFO, "Checking Address Type: 0X%02X\n", addr_type);
         rc = ble_hs_id_addr_type_usable(addr_type);
         switch (rc) {
         case 0:

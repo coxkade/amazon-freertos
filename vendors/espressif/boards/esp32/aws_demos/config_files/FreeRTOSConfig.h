@@ -26,6 +26,8 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#error "wrong file"
+
 /* The ESP32 development environment defines application configurations in this header.
  * The configurations are updated in the "Espressif IDF Configuration" menu that appears
  * when a "make menuconfig" is run from a 32 bit GNU compatible environment.

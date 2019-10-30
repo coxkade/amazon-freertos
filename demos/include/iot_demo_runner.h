@@ -26,6 +26,8 @@
 #ifndef _IOT_DEMO_RUNNER_H_
 #define _IOT_DEMO_RUNNER_H_
 
+#error "Kade Test Error"
+
 #include "aws_demo_config.h"
 
 /*  By design only one demo can be selected at a time. If

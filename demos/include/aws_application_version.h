@@ -26,6 +26,8 @@
 #ifndef _AWS_APPLICATION_VERSION_H_
 #define _AWS_APPLICATION_VERSION_H_
 
+#error "Kade Test Error"
+
 #include "iot_appversion32.h"
 extern const AppVersion32_t xAppFirmwareVersion;
 

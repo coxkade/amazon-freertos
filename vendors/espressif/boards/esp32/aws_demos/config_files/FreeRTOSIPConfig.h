@@ -34,6 +34,8 @@
 #ifndef FREERTOS_IP_CONFIG_H
 #define FREERTOS_IP_CONFIG_H
 
+#error "wrong file"
+
 /* Prototype for the function used to print out.  In this case it prints to the
  * console before the network is connected then a UDP port after the network has
  * connected. */

@@ -26,6 +26,8 @@
 #ifndef _AWS_DEMO_H_
 #define _AWS_DEMO_H_
 
+#error "Kade Test Error"
+
 #include "platform/iot_network.h"
 #include "platform/iot_threads.h"
 
